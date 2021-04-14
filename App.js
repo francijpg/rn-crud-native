@@ -26,7 +26,7 @@ const theme = {
 
 const App = () => {
   return (
-    <>
+    <PaperProvider>
       <NavigationContainer>
         <Stack.Navigator
           initialRouteName="Home"
@@ -65,7 +65,7 @@ const App = () => {
           />
         </Stack.Navigator>
       </NavigationContainer>
-    </>
+    </PaperProvider>
   );
 };
 
