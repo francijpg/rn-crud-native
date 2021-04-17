@@ -8,7 +8,7 @@ const Home = ({navigation}) => {
   const [clients, setClients] = useState([]);
   const [consultAPI, setConsultAPI] = useState(true);
 
-  console.log(!!clients.length);
+  // console.log(!!clients.length);
   useEffect(() => {
     const getApiClients = async () => {
       try {
