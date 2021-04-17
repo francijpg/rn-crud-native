@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {Platform, StyleSheet, View} from 'react-native';
 import axios from 'axios';
 import {
@@ -20,6 +20,17 @@ const NewClient = ({navigation, route}) => {
   const [clientCompany, setClientCompany] = useState('');
   const [alert, setAlert] = useState(false);
 
+  useEffect(() => {
+    if (route.params.client) {
+      const {name, phone, email, company} = route.params.client;
+
+      setClientName(name);
+      setClientPhone(phone);
+      setClientEmail(email);
+      setClientCompany(company);
+    }
+  }, [route.params.client]);
+
   const registerClient = async () => {
     if (
       !clientName.trim().length ||
@@ -36,16 +47,29 @@ const NewClient = ({navigation, route}) => {
     const email = clientEmail.trim();
     const company = clientCompany.trim();
     const client = {name, phone, email, company};
-    console.log(client);
-    try {
-      if (Platform.OS === 'ios') {
-        // json-server --watch db.json --port 8000
-        await axios.post('http://localhost:8000/clients', client);
-      } else {
-        await axios.post('http://10.0.2.2:8000/clients', client);
+    // console.log(client);
+
+    if (route.params.client) {
+      const {id} = route.params.client;
+      client.id = id;
+      const url = `http://localhost:8000/clients/${id}`;
+
+      try {
+        await axios.put(url, client);
+      } catch (error) {
+        console.log(error);
       }
-    } catch (error) {
-      console.log(error);
+    } else {
+      try {
+        if (Platform.OS === 'ios') {
+          // json-server --watch db.json --port 8000
+          await axios.post('http://localhost:8000/clients', client);
+        } else {
+          await axios.post('http://10.0.2.2:8000/clients', client);
+        }
+      } catch (error) {
+        console.log(error);
+      }
     }
 
     navigation.navigate('Home');
