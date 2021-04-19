@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import {Platform, StyleSheet, View} from 'react-native';
 import axios from 'axios';
 import {
@@ -10,6 +10,7 @@ import {
   TextInput,
 } from 'react-native-paper';
 import globalStyles from '../styles/global';
+import utils from '../utils';
 
 const NewClient = ({navigation, route}) => {
   const {setConsultAPI} = route.params;
@@ -20,8 +21,13 @@ const NewClient = ({navigation, route}) => {
   const [clientCompany, setClientCompany] = useState('');
   const [alert, setAlert] = useState(false);
 
+  const {evaluatePlatform} = utils;
+  let mainTitle = useRef('register new client');
+
   useEffect(() => {
-    if (route.params.client) {
+    if (route.params?.client) {
+      mainTitle.current = 'update client';
+
       const {name, phone, email, company} = route.params.client;
 
       setClientName(name);
@@ -29,7 +35,7 @@ const NewClient = ({navigation, route}) => {
       setClientEmail(email);
       setClientCompany(company);
     }
-  }, [route.params.client]);
+  }, [mainTitle, route.params.client]);
 
   const registerClient = async () => {
     if (
@@ -48,11 +54,12 @@ const NewClient = ({navigation, route}) => {
     const company = clientCompany.trim();
     const client = {name, phone, email, company};
     // console.log(client);
+    const urlBase = evaluatePlatform(Platform.OS);
 
     if (route.params.client) {
       const {id} = route.params.client;
       client.id = id;
-      const url = `http://localhost:8000/clients/${id}`;
+      const url = `${urlBase}/${id}`;
 
       try {
         await axios.put(url, client);
@@ -61,12 +68,7 @@ const NewClient = ({navigation, route}) => {
       }
     } else {
       try {
-        if (Platform.OS === 'ios') {
-          // json-server --watch db.json --port 8000
-          await axios.post('http://localhost:8000/clients', client);
-        } else {
-          await axios.post('http://10.0.2.2:8000/clients', client);
-        }
+        await axios.post(urlBase, client);
       } catch (error) {
         console.log(error);
       }
@@ -83,7 +85,9 @@ const NewClient = ({navigation, route}) => {
 
   return (
     <View style={globalStyles.container}>
-      <Headline style={globalStyles.title}>Register New Client</Headline>
+      <Headline style={globalStyles.title} ref={mainTitle}>
+        {mainTitle.current}
+      </Headline>
       <TextInput
         label="Name"
         placeholder="Name of Individual"
