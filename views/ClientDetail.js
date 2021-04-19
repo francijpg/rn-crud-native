@@ -1,12 +1,15 @@
 import axios from 'axios';
 import React from 'react';
-import {Alert, StyleSheet, View} from 'react-native';
+import {Alert, Platform, StyleSheet, View} from 'react-native';
 import {Button, FAB, Headline, Subheading, Text} from 'react-native-paper';
 import globalStyles from '../styles/global';
+import utils from '../utils';
 
 const ClientDetail = ({navigation, route}) => {
   const {setConsultAPI} = route.params;
   const {name, phone, email, company, id} = route.params.item;
+
+  const {evaluatePlatform} = utils;
 
   const showConfirmation = () => {
     Alert.alert(
@@ -19,8 +22,9 @@ const ClientDetail = ({navigation, route}) => {
     );
   };
   const deleteClient = async () => {
-    const url = `http://localhost:8000/clients/${id}`;
-    // console.log(url);
+    const urlBase = evaluatePlatform(Platform.OS);
+    const url = `${urlBase}/${id}`;
+
     try {
       await axios.delete(url);
     } catch (error) {
