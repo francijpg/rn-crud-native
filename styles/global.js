@@ -11,6 +11,7 @@ const globalStyles = StyleSheet.create({
     marginTop: 20,
     marginBottom: 30,
     fontSize: 30,
+    textTransform: 'capitalize',
   },
   fab: {
     position: 'absolute',
