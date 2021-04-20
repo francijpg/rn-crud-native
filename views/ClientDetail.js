@@ -6,9 +6,7 @@ import globalStyles from '../styles/global';
 import utils from '../utils';
 
 const ClientDetail = ({navigation, route}) => {
-  const {setConsultAPI} = route.params;
   const {name, phone, email, company, id} = route.params.item;
-
   const {evaluatePlatform} = utils;
 
   const showConfirmation = () => {
@@ -32,7 +30,6 @@ const ClientDetail = ({navigation, route}) => {
     }
 
     navigation.navigate('Home');
-    setConsultAPI(true);
   };
   return (
     <View style={globalStyles.container}>
@@ -61,7 +58,6 @@ const ClientDetail = ({navigation, route}) => {
         onPress={() =>
           navigation.navigate('NewClient', {
             client: route.params.item,
-            setConsultAPI,
           })
         }
       />
