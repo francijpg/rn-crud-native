@@ -1,35 +1,36 @@
-import React, {useEffect, useState} from 'react';
+import React, {useState, useCallback} from 'react';
 import axios from 'axios';
-import {FlatList, View} from 'react-native';
+import {FlatList, Platform, View} from 'react-native';
 import {Button, FAB, Headline, List} from 'react-native-paper';
 import globalStyles from '../styles/global';
+import utils from '../utils';
+import {useFocusEffect} from '@react-navigation/native';
 
 const Home = ({navigation}) => {
   const [clients, setClients] = useState([]);
-  const [consultAPI, setConsultAPI] = useState(true);
+  const {evaluatePlatform} = utils;
 
-  // console.log(!!clients.length);
-  useEffect(() => {
-    const getApiClients = async () => {
-      try {
-        const {data} = await axios.get('http://localhost:8000/clients');
-        setClients(data);
-        setConsultAPI(false);
-      } catch (error) {
-        console.log(error);
-      }
-    };
+  useFocusEffect(
+    useCallback(() => {
+      const getApiClients = async () => {
+        try {
+          const url = evaluatePlatform(Platform.OS);
+          const {data} = await axios.get(url);
+          setClients(data);
+        } catch (error) {
+          console.log(error);
+        }
+      };
 
-    if (consultAPI) {
       getApiClients();
-    }
-  }, [consultAPI]);
+    }, [evaluatePlatform]),
+  );
 
   return (
     <View style={globalStyles.container}>
       <Button
         icon="plus-circle"
-        onPress={() => navigation.navigate('NewClient', {setConsultAPI})}>
+        onPress={() => navigation.navigate('NewClient')}>
         New Client
       </Button>
 
@@ -47,7 +48,6 @@ const Home = ({navigation}) => {
             onPress={() =>
               navigation.navigate('ClientDetail', {
                 item,
-                setConsultAPI,
               })
             }
           />
@@ -57,7 +57,7 @@ const Home = ({navigation}) => {
       <FAB
         icon="plus"
         style={globalStyles.fab}
-        onPress={() => navigation.navigate('NewClient', {setConsultAPI})}
+        onPress={() => navigation.navigate('NewClient')}
       />
     </View>
   );
