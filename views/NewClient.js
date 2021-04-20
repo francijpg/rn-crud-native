@@ -13,8 +13,6 @@ import globalStyles from '../styles/global';
 import utils from '../utils';
 
 const NewClient = ({navigation, route}) => {
-  const {setConsultAPI} = route.params;
-
   const [clientName, setClientName] = useState('');
   const [clientPhone, setClientPhone] = useState('');
   const [clientEmail, setClientEmail] = useState('');
@@ -22,11 +20,11 @@ const NewClient = ({navigation, route}) => {
   const [alert, setAlert] = useState(false);
 
   const {evaluatePlatform} = utils;
-  let mainTitle = useRef('register new client');
+  const titleRef = useRef('register new client');
 
   useEffect(() => {
     if (route.params?.client) {
-      mainTitle.current = 'update client';
+      titleRef.current = 'update client';
 
       const {name, phone, email, company} = route.params.client;
 
@@ -35,7 +33,7 @@ const NewClient = ({navigation, route}) => {
       setClientEmail(email);
       setClientCompany(company);
     }
-  }, [mainTitle, route.params.client]);
+  }, [titleRef, route.params?.client]);
 
   const registerClient = async () => {
     if (
@@ -56,7 +54,7 @@ const NewClient = ({navigation, route}) => {
     // console.log(client);
     const urlBase = evaluatePlatform(Platform.OS);
 
-    if (route.params.client) {
+    if (route.params?.client) {
       const {id} = route.params.client;
       client.id = id;
       const url = `${urlBase}/${id}`;
@@ -79,15 +77,11 @@ const NewClient = ({navigation, route}) => {
     setClientPhone('');
     setClientEmail('');
     setClientCompany('');
-
-    setConsultAPI(true);
   };
 
   return (
     <View style={globalStyles.container}>
-      <Headline style={globalStyles.title} ref={mainTitle}>
-        {mainTitle.current}
-      </Headline>
+      <Headline style={globalStyles.title}>{titleRef.current}</Headline>
       <TextInput
         label="Name"
         placeholder="Name of Individual"
