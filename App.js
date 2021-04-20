@@ -9,7 +9,6 @@ import {DefaultTheme, Provider as PaperProvider} from 'react-native-paper';
 import Home from './views/Home';
 import NewClient from './views/NewClient';
 import ClientDetail from './views/ClientDetail';
-import TopBar from './components/ui/TopBar';
 
 const Stack = createStackNavigator();
 
@@ -21,8 +20,6 @@ const theme = {
     accent: '#0655BF',
   },
 };
-
-// console.log(theme);
 
 const App = () => {
   return (
@@ -39,16 +36,7 @@ const App = () => {
               fontWeight: 'bold',
             },
           }}>
-          <Stack.Screen
-            name="Home"
-            component={Home}
-            options={({navigation, route}) => ({
-              headerTitleAlign: 'center',
-              headerLeft: props => (
-                <TopBar {...props} navigation={navigation} route={route} />
-              ),
-            })}
-          />
+          <Stack.Screen name="Home" component={Home} />
           <Stack.Screen
             name="NewClient"
             component={NewClient}
